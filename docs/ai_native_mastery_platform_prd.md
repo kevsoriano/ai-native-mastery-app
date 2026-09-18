@@ -7,7 +7,7 @@
 | **Document**     | **Value**                                                                                                  |
 |------------------|------------------------------------------------------------------------------------------------------------|
 | Status           | Concept PRD for social-impact discovery, offline-first MVP planning, and Google Cloud prototype deployment |
-| Version          | 0.9                                                                                                        |
+| Version          | 0.10                                                                                                       |
 | Date             | 18 September 2026                                                                                          |
 | Primary audience | Product, design, engineering, learning science, and pilot partners                                         |
 | Initial wedge    | Data Problem-Solving and Automation                                                                        |
@@ -28,13 +28,15 @@ The proposed product is a Google Cloud-supported, offline-first mastery and evid
 
 The MVP should validate two linked claims: first, that learners can complete a high-quality adaptive pathway on representative low-cost devices despite intermittent connectivity; second, that multi-modal evidence predicts independent performance better than course completion and conventional quiz scores. It should not attempt to become a general-purpose course catalog, credentialing body, employment evaluation system, or substitute for broader investments in teachers, devices, connectivity, and local education systems.
 
+Generative AI is a substantive part of the learning and evidence experience. It acts as a misconception-aware tutor and qualitative evidence interpreter: it adapts explanations to the learner's error, creates bounded practice variations, asks follow-up questions about submitted work, and converts reasoning into reviewable evidence claims. It does not independently determine mastery. Deterministic validators, versioned rubrics, policy rules, and human escalation remain authoritative, and an authored fallback preserves the full learning loop when a suitable on-device model or connection is unavailable.
+
 ## Recommended first product
 
 - Target learner: motivated adults in rural or underserved communities who need practical data skills but may face intermittent connectivity, limited device capacity, uneven formal preparation, or limited access to instructors.
 
 - Initial pathway: Data Problem-Solving and Automation, beginning with data literacy and spreadsheets, progressing through SQL, and introducing scripting when automation adds clear value.
 
-- Core experience: downloadable diagnostic assessment, adaptive learning plan, optional local AI mentor, quizzes, oral explanation, hands-on tasks, delayed retention checks, and an evidence-backed skill profile.
+- Core experience: downloadable diagnostic assessment, adaptive learning plan, a misconception-aware GenAI tutor in Learning Mode, bounded practice variation, dynamic follow-up questions in Proof Mode, hands-on tasks, delayed retention checks, and an evidence-backed skill profile. Every GenAI feature has an authored or deterministic fallback.
 
 - Access model: Android-first personal-device experience that completes the core loop offline, uses compact downloadable or physically transferable content packs, and synchronizes opportunistically when connectivity returns.
 
@@ -334,6 +336,20 @@ Target skill: detect and repair inconsistent values in a small operational datas
 
 - Complex AI scoring may remain provisional until local-hub or cloud review, but progress and evidence are never discarded. Synchronization preserves the original event and policy versions.
 
+## 6.10 Generative AI assisted learner journey
+
+Generative AI changes the response to the learner rather than replacing the mastery engine. Each invocation receives a bounded skill definition, approved source excerpts, the relevant learner attempt, known misconceptions, permitted assistance, and an output constraint. The learner can inspect the resulting explanation or question, while the system records the model, prompt policy, source bundle, inference location, and assistance level.
+
+| **Moment**      | **Generative AI contribution**                                                                             | **Authoritative control**                                                                                          |
+|-----------------|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| Diagnose        | Interpret explanations or work traces and propose likely misconceptions.                                   | Validated items and deterministic checks establish correctness; model labels remain hypotheses.                    |
+| Learn           | Create a targeted explanation, analogy, example, or short Socratic exchange grounded in approved material. | The authored lesson is always available; the model may not introduce unapproved learning objectives.               |
+| Practice        | Generate bounded variants and progressive hints based on the current error pattern.                        | Templates, validators, difficulty limits, and assistance logging constrain the activity.                           |
+| Verify          | Ask a dynamic defense question tied to the learner's artifact or reasoning.                                | Novel task selection, allowed assistance, rubric scoring, and mastery transitions remain versioned and reviewable. |
+| Evidence review | Transform qualitative responses into structured, traceable evidence claims with uncertainty.               | Rules combine evidence; low-confidence or consequential cases require human review.                                |
+
+Offline hierarchy. Low-cost or unsupported devices use authored explanations, pre-generated variants, and deterministic feedback. Supported devices may use short, single-turn on-device generation. Connected sessions may use richer Gemini dialogue, multimodal review, or speech. Loss of either the model or the network must degrade the experience, not block it.
+
 # 7 Primary User Flows
 
 ## 7.1 New learner
@@ -450,22 +466,23 @@ The product uses a local-first execution boundary. Cloud services are meaningful
 
 ## 9.1 In scope
 
-| **Capability**                    | **MVP requirement**                                                                                                                                                                                                                                                 |
-|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Skill graph                       | Data Problem-Solving and Automation with 30–60 observable skills spanning data foundations, spreadsheets, SQL, and limited scripting.                                                                                                                               |
-| Diagnostic                        | Adaptive baseline using a bounded item and task bank.                                                                                                                                                                                                               |
-| AI mentor                         | Dialogue grounded in approved resources, skills, and misconceptions.                                                                                                                                                                                                |
-| Adaptive practice                 | Rules-based activity selection with transparent reasons.                                                                                                                                                                                                            |
-| Proof Mode                        | Adaptive quiz, oral explanation, and one hands-on task type.                                                                                                                                                                                                        |
-| Mastery estimate                  | Evidence-weighted state with uncertainty and decay.                                                                                                                                                                                                                 |
-| Evidence record                   | Timestamped events with rubric, assistance, provenance, and scorer confidence.                                                                                                                                                                                      |
-| Dashboard                         | Learner skill map; basic instructor review queue and cohort summary.                                                                                                                                                                                                |
-| Retention                         | At least one delayed reassessment schedule.                                                                                                                                                                                                                         |
-| Evaluation                        | External transfer task and calibration analysis.                                                                                                                                                                                                                    |
-| Offline operation                 | Android-first local data, downloadable content pack, sync queue, and resilient restart.                                                                                                                                                                             |
-| Future hub readiness              | Content, evidence, and synchronization formats remain compatible with a later local hub, but hub hardware and operations are not required for the first deployment.                                                                                                 |
-| Offline sandbox                   | Constrained table, SQL, and scripting workspace with starter datasets, deterministic tests, local project history, resource limits, and no external network access by default.                                                                                      |
-| Google Cloud prototype deployment | Deploy a functional client through Firebase or Cloud Run, use Firebase or Cloud Run for real synchronization or online processing, and integrate a meaningful Gemini or Gemma capability. The downloaded core loop must remain usable when the network is disabled. |
+| **Capability**                               | **MVP requirement**                                                                                                                                                                                                                                                 |
+|----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Skill graph                                  | Data Problem-Solving and Automation with 30–60 observable skills spanning data foundations, spreadsheets, SQL, and limited scripting.                                                                                                                               |
+| Diagnostic                                   | Adaptive baseline using a bounded item and task bank.                                                                                                                                                                                                               |
+| AI mentor                                    | Dialogue grounded in approved resources, skills, and misconceptions.                                                                                                                                                                                                |
+| Adaptive practice                            | Rules-based activity selection with transparent reasons.                                                                                                                                                                                                            |
+| Proof Mode                                   | Adaptive quiz, oral explanation, and one hands-on task type.                                                                                                                                                                                                        |
+| Mastery estimate                             | Evidence-weighted state with uncertainty and decay.                                                                                                                                                                                                                 |
+| Evidence record                              | Timestamped events with rubric, assistance, provenance, and scorer confidence.                                                                                                                                                                                      |
+| Dashboard                                    | Learner skill map; basic instructor review queue and cohort summary.                                                                                                                                                                                                |
+| Retention                                    | At least one delayed reassessment schedule.                                                                                                                                                                                                                         |
+| Evaluation                                   | External transfer task and calibration analysis.                                                                                                                                                                                                                    |
+| Offline operation                            | Android-first local data, downloadable content pack, sync queue, and resilient restart.                                                                                                                                                                             |
+| Future hub readiness                         | Content, evidence, and synchronization formats remain compatible with a later local hub, but hub hardware and operations are not required for the first deployment.                                                                                                 |
+| Offline sandbox                              | Constrained table, SQL, and scripting workspace with starter datasets, deterministic tests, local project history, resource limits, and no external network access by default.                                                                                      |
+| Google Cloud prototype deployment            | Deploy a functional client through Firebase or Cloud Run, use Firebase or Cloud Run for real synchronization or online processing, and integrate a meaningful Gemini or Gemma capability. The downloaded core loop must remain usable when the network is disabled. |
+| Generative AI tutor and evidence interpreter | Use Gemini or Gemma to generate grounded targeted explanations, bounded hints or variants, dynamic follow-up questions, and reviewable evidence interpretations. Preserve authored fallbacks and keep mastery decisions outside the generative model.               |
 
 ## 9.2 Explicitly out of scope
 
@@ -525,6 +542,11 @@ The product uses a local-first execution boundary. Cloud services are meaningful
 | FR18   | Show offline availability, storage cost, update status, and pending synchronization clearly.                                                                              | Must         |
 | FR19   | Apply versioned stage-transition rules and record the reason for every next-stage and next-activity decision.                                                             | Must         |
 | FR20   | Run approved spreadsheet-like, SQL, and scripting activities offline in a constrained sandbox and record commands, revisions, tests, assistance, and outputs as evidence. | Must         |
+| FR21   | Generate a targeted explanation from an approved source bundle, detected misconception, learner attempt, and declared reading level.                                      | Must         |
+| FR22   | Generate bounded hints or practice variants without revealing protected answers or changing the skill objective.                                                          | Should       |
+| FR23   | Generate a follow-up question tied to the learner's submitted artifact or explanation and record that AI assistance occurred.                                             | Must         |
+| FR24   | Return traceable evidence interpretations with model, policy, source bundle, inference location, uncertainty, and review status.                                          | Must         |
+| FR25   | Select authored, on-device, or cloud GenAI behavior from explicit capability and connectivity checks, with no hidden dependency on cloud inference.                       | Must         |
 
 # 11 Nonfunctional Requirements
 
@@ -547,16 +569,30 @@ The product uses a local-first execution boundary. Cloud services are meaningful
 
 ## 12.1 AI responsibilities
 
-| **Component**        | **AI role**                                                       | **Required guardrail**                                                                   |
-|----------------------|-------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| Tutor                | Explain, question, diagnose misconceptions, and provide feedback. | Ground responses in approved sources and provide authored offline fallbacks.             |
-| Activity selector    | Rank eligible next activities.                                    | Use observable features and log the reason; begin with rules.                            |
-| Assessment generator | Create controlled variants from approved templates.               | Human-approved blueprint, leakage checks, and item review sampling.                      |
-| Scorer               | Apply a structured rubric to open responses and oral transcripts. | Confidence threshold, second-pass checks, and human escalation.                          |
-| Mastery updater      | Combine evidence into a current estimate.                         | Run locally through a calibrated, versioned model with monotonic and policy constraints. |
-| Integrity assistant  | Identify inconsistencies and trigger follow-up questions.         | Never infer deception from identity, emotion, gaze, or accent.                           |
+| **Component**        | **AI role**                                                                                                             | **Required guardrail**                                                                                         |
+|----------------------|-------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| Tutor                | Generate grounded, misconception-specific explanations, questions, examples, and feedback from bounded learner context. | Approved source bundle, prompt version, assistance logging, short-output limit, and authored offline fallback. |
+| Activity selector    | Rank eligible next activities.                                                                                          | Use observable features and log the reason; begin with rules.                                                  |
+| Assessment generator | Draft controlled variants from approved templates; never release high-stakes items autonomously.                        | Human-approved blueprint, leakage checks, and item review sampling.                                            |
+| Scorer               | Interpret open responses and oral transcripts into rubric-linked evidence claims with uncertainty.                      | Confidence threshold, second-pass checks, and human escalation.                                                |
+| Mastery updater      | Combine evidence into a current estimate.                                                                               | Run locally through a calibrated, versioned model with monotonic and policy constraints.                       |
+| Integrity assistant  | Identify inconsistencies and trigger follow-up questions.                                                               | Never infer deception from identity, emotion, gaze, or accent.                                                 |
 
-## 12.2 Core entities
+## 12.2 Generative AI operating model
+
+The primary learner-facing GenAI capability is misconception-aware tutoring. The primary evidence capability is dynamic probing and qualitative evidence interpretation. These uses are substantive because the generated response depends on the learner's actual reasoning and changes the next interaction. Generic chat, decorative summaries, or a disconnected chatbot do not satisfy this requirement.
+
+| **Capability**       | **Bounded input**                                               | **Expected output**                                               | **Decision authority**                             |
+|----------------------|-----------------------------------------------------------------|-------------------------------------------------------------------|----------------------------------------------------|
+| Targeted tutor       | Skill, misconception, attempt, approved excerpts, reading level | Explanation, analogy, worked example, comprehension question      | Advisory; authored lesson remains available        |
+| Practice assistant   | Skill template, constraints, recent errors, hint budget         | Variant, hint, feedback, or counterexample                        | Validators determine correctness and readiness     |
+| Proof probe          | Submitted artifact, action trace, rubric dimension              | One focused follow-up question                                    | Rubric and review policy determine evidence weight |
+| Evidence interpreter | Response, artifact summary, provenance, rubric                  | Claims, supporting observations, uncertainty, escalation flag     | Mastery updater accepts only policy-valid evidence |
+| Authoring assistant  | Approved curriculum and assessment blueprint                    | Draft explanation, item variant, rubric language, or audio script | Human approval required before release             |
+
+Generation controls. Prompts and source bundles are versioned. Cloud responses should use schema-constrained output where supported. On-device Android generation is treated as optional and capability-gated because current Firebase AI hybrid support is experimental, device-limited, single-turn, and does not support structured output. A parser may validate simple local responses, but failure must route to an authored fallback rather than silently invoking cloud inference while the learner believes the session is offline.
+
+## 12.3 Core entities
 
 | **Entity**     | **Selected fields**                                                                                |
 |----------------|----------------------------------------------------------------------------------------------------|
@@ -571,13 +607,13 @@ The product uses a local-first execution boundary. Cloud services are meaningful
 | Sync event     | event id, device, local sequence, payload version, status, attempts, acknowledgment                |
 | Content bundle | bundle id, locale, skills, version, size, manifest, signature, dependencies                        |
 
-## 12.3 Initial mastery implementation
+## 12.4 Initial mastery implementation
 
 Start with an interpretable evidence-weighting model rather than an opaque end-to-end predictor. Correct independent transfer evidence should carry more weight than assisted practice. Contradictory recent evidence should reduce confidence. Older evidence should decay at a skill-specific rate. Prerequisites may influence recommendations, but a weak prerequisite should not automatically overwrite direct evidence for a downstream skill.
 
 Once the pilot produces enough longitudinal data, compare Bayesian knowledge tracing, item-response approaches, and learned sequence models. Promotion should require better calibration and prediction of external transfer—not merely higher fit to internal quiz outcomes.
 
-## 12.4 Content and assessment quality
+## 12.5 Content and assessment quality
 
 - Maintain a human-approved assessment blueprint specifying skill coverage and cognitive demand.
 
@@ -589,7 +625,7 @@ Once the pilot produces enough longitudinal data, compare Bayesian knowledge tra
 
 - Do not train or tune on the same responses used for final claims without a documented split.
 
-## 12.5 Google AI deployment boundary
+## 12.6 Google AI deployment boundary
 
 The prototype must use Gemini, Gemma, or an eligible Google agentic platform for a substantive product capability. Integration is substantive when the model changes an explanation, review, recommendation, or content artifact that a learner or reviewer can inspect. A logo, unused endpoint, or cloud-hosted static page does not meet this intent.
 
@@ -730,6 +766,7 @@ Decided items are approved product constraints. Recommended items remain proposa
 | **11 Pilot language**               | English only; English plus Filipino; English plus multiple local languages.                                                                        | Decided: English only for the pilot. Preserve localization architecture and equivalent non-voice paths for later expansion.                                                                                                                                                                             |
 | **12 Provisional offline evidence** | A. No time limit; B. Fixed expiry; C. Local reviewer finalization; D. Tiered rule based on intended use.                                           | Recommended: D. Never discard learning progress, but prevent externally shared verified claims after 30 unsynchronized days unless a qualified local reviewer finalizes them.                                                                                                                           |
 | 13 Google Cloud integration         | A. Firebase only; B. Cloud Run only; C. Hybrid Firebase and Cloud Run.                                                                             | Recommended: A for the prototype. Use Firebase for hosting, authentication, content distribution, offline-aware synchronization, and the minimum backend needed for the Gemini or Gemma capability. Add Cloud Run only when heavier Gemini processing or independent scaling is demonstrably necessary. |
+| 14 GenAI product role               | A. Generic chatbot; B. Automated mastery judge; C. Misconception-aware tutor and evidence interpreter with deterministic authority                 | Recommended: C. It makes GenAI essential to personalization and qualitative evidence while preserving offline continuity, auditability, and learner rights.                                                                                                                                             |
 
 # 19 Launch Decision Gates
 
